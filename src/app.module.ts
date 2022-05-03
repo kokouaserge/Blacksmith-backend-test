@@ -4,8 +4,10 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './Auth/auth.module';
+import { UserModule } from './User/user.module';
 import { ParkingModule } from './Parking/parking.module';
 import { PlaceParkingModule } from './Place_Parking/place_parking.module';
+import { CoreModule } from './Core/core.module';
 
 @Module({
   imports: [
@@ -30,8 +32,10 @@ import { PlaceParkingModule } from './Place_Parking/place_parking.module';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
     }),
     AuthModule,
+    UserModule,
     ParkingModule,
     PlaceParkingModule,
+    CoreModule,
   ],
   controllers: [AppController],
   providers: [AppService],

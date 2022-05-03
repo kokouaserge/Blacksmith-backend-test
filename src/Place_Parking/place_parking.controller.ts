@@ -18,7 +18,7 @@ import { PlaceParkingCreateDto } from './dto/place_parking_create.dto';
 import { Assign } from './interfaces/assign.interface';
 import { PlaceParkingAssignDto } from './dto/place_parking_assign.dto';
 
-@Controller('place_parkings')
+@Controller('places_parking')
 export class PlaceParkingController {
   constructor(private readonly placeParkingService: PlaceParkingService) {}
 
@@ -35,6 +35,29 @@ export class PlaceParkingController {
     @Req() req: any,
   ): Promise<PlaceParkingDto> {
     return await this.placeParkingService.create(place, req);
+  }
+
+  @Get('/availables')
+  @UseGuards(AuthGuard('jwt'))
+  async placesAvailables(
+    @Req() req: any,
+    @Query('start') start: string,
+    @Query('end') end: string,
+  ): Promise<PlaceParkingDto[]> {
+    const filter = { start, end };
+    return await this.placeParkingService.findAllAvailable(req, filter);
+  }
+
+  @Get('/search')
+  @UseGuards(AuthGuard('jwt'))
+  async searchPlaces(
+    @Req() req: any,
+    @Query('start') start: string,
+    @Query('end') end: string,
+    @Query('etage') etage: number,
+  ): Promise<any> {
+    const filter = { start, end, etage };
+    return await this.placeParkingService.searchPlaces(filter, req);
   }
 
   @Get(':place_id')
@@ -55,12 +78,6 @@ export class PlaceParkingController {
     return await this.placeParkingService.update(place, place_id, req);
   }
 
-  @Post('/search')
-  @UseGuards(AuthGuard('jwt'))
-  async searchPlaces(@Req() req: any, @Body() filter: any): Promise<any> {
-    return await this.placeParkingService.searchPlaces(filter, req);
-  }
-
   @Post(':place_id')
   @UseGuards(AuthGuard('jwt'))
   async placeAssign(
@@ -71,8 +88,8 @@ export class PlaceParkingController {
     const optionFilter: Assign = {
       start: body.start,
       end: body.end,
-      type: type,
-      place_id: place_id,
+      type,
+      place_id,
       user_id: body.user_id,
     };
     return await this.placeParkingService.assignDesassign(optionFilter);

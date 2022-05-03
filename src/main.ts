@@ -6,7 +6,7 @@ import rateLimit from 'express-rate-limit';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const port = 3000;
+  const port = 3001;
 
   app.use(helmet());
   app.enableCors();
@@ -16,6 +16,7 @@ async function bootstrap() {
   });
   app.use(rate);
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+  app.setGlobalPrefix('api');
   await app.listen(port);
   Logger.log(`Server started running on http://localhost:${port}`, 'Bootstrap');
 }

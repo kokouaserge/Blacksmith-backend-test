@@ -52,11 +52,21 @@ export class PlaceParkingService {
       );
     }
     const { numero, etage, parking_id } = place;
+    let newParking_id = parking_id;
+
+    if (parking_id === 'default') {
+      const parkings = await this.placeParkingRepo.query(
+        'SELECT * FROM parkings WHERE entreprise_id = $1',
+        [req.user.entreprise_id],
+      );
+
+      newParking_id = parkings[0].uuid;
+    }
     const placeParkingCreate: PlaceParkingEntity =
       await this.placeParkingRepo.create({
         numero,
         etage,
-        parking_id,
+        parking_id: newParking_id,
       });
 
     const newPlaceParking = await this.placeParkingRepo.save(
@@ -161,6 +171,24 @@ export class PlaceParkingService {
       if (availables.length === 0) placesAvailable.push(place);
     }
 
+    return placesAvailable;
+  }
+
+  async findAllAvailable(
+    req: any,
+    filter: { start: string; end: string },
+  ): Promise<PlaceParkingDto[]> {
+    const places = await this.findAll(req);
+
+    const placesAvailable = [];
+
+    for (const place of places) {
+      const filterForAVailable: any = filter;
+      filterForAVailable.place_id = place.uuid;
+      const availables = await this.checkAvailablePlace(filterForAVailable);
+
+      if (availables.length === 0) placesAvailable.push(place);
+    }
     return placesAvailable;
   }
 
