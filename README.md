@@ -26,14 +26,14 @@ $ npm run start:prod
 $ POST ===> api/settings
 $ form Data ===> {
 
-name: entreprise name
-description: entreprise description
-firstname: admin firstname
-lastname: admin lastname
-contact: admin contact
-password: admin password
-email: admin email
-
+$ name: "entreprise name"
+$ description: "entreprise description"
+$ firstname: "admin firstname"
+$ lastname: "admin lastname"
+$ contact: "admin contact"
+$ password: "admin password"
+$ email: "admin email"
+$
 }
 
 ````
